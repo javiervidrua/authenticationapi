@@ -1,0 +1,38 @@
+// Users
+Table users {
+  // Internal
+  id int [pk, increment]
+  role roles [default: "regular"]
+  verified boolean [default: false]
+  created timestamp [default: `now()`]
+  last timestamp
+  
+  // Auth
+  email varchar [unique, not null]
+  password varchar [not null]
+  
+  // User data
+  full_name varchar [not null]
+  address varchar
+  city varchar
+  postal varchar
+  phone varchar
+}
+
+// Roles
+Enum roles {
+  regular
+  admin [note: 'Has root access']
+}
+
+// Users & Groups
+Table users_groups {
+  user_id int [pk, ref: > users.id]
+  group_id int [pk, ref: > groups.id]
+}
+
+// Groups
+Table groups {
+  id int [pk, increment]
+  name varchar [not null]
+}
