@@ -1,0 +1,45 @@
+{
+  "name": "authenticationapi",
+  "version": "1.0.0",
+  "description": "Authentication API implemented in Node.js",
+  "main": "index.js",
+  "scripts": {
+    "serve": "node ./node_modules/nodemon/bin/nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javiervidrua/authenticationapi.git"
+  },
+  "keywords": [
+    "node",
+    "nodejs",
+    "api",
+    "auth",
+    "authentication",
+    "express",
+    "swagger",
+    "postman",
+    "jwt",
+    "passport",
+    "postgresql",
+    "postgres",
+    "dbdiagram.io"
+  ],
+  "author": "Javier Vidal Ruano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/javiervidrua/authenticationapi/issues"
+  },
+  "homepage": "https://github.com/javiervidrua/authenticationapi#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "morgan": "^1.10.0",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
