@@ -1,0 +1,104 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Authentication API",
+    "description": "An authentication API implemented in Node.js",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/v1",
+  "schemes": ["http", "https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "in": "headers",
+      "name": "authorization"
+    }
+  },
+  "paths": {
+    "/test": {
+      "get": {
+        "summary": "Test that everything works fine",
+        "tags": ["Test"],
+        "description": "Test that everything works fine",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Everything works",
+            "schema": {
+              "$ref": "#/definitions/Test"
+            }
+          },
+          "500": {
+            "description": "Things are not working"
+          }
+        }
+      }
+    },
+    "/user/signin": {
+      "post": {
+        "summary": "User sign in",
+        "tags": ["User"],
+        "description": "Sign in the user in the system",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User credentials to use to sign in",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Sign in success",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          },
+          "400": {
+            "description": "Invalid credentials"
+          },
+          "500": {
+            "description": "Error signing in"
+          }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "Test": {
+      "properties": {
+        "status": {
+          "type": "number"
+        }
+      }
+    },
+    "User": {
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "UserEmail":{
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      }
+  }
+}
