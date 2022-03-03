@@ -4,6 +4,7 @@ Table users {
   id int [pk, increment]
   role roles [default: "regular"]
   verified boolean [default: false]
+  verification_token string [unique]
   created timestamp [default: `now()`]
   last timestamp
   
@@ -29,6 +30,7 @@ Enum roles {
 Table users_groups {
   user_id int [pk, ref: > users.id]
   group_id int [pk, ref: > groups.id]
+  is_admin boolean [default: false]
 }
 
 // Groups

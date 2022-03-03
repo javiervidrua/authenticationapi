@@ -7,6 +7,7 @@ CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
   "role" roles DEFAULT 'regular',
   "verified" boolean DEFAULT false,
+  "verification_token" string UNIQUE,
   "created" timestamp DEFAULT (now()),
   "last" timestamp,
   "email" varchar UNIQUE NOT NULL,
@@ -21,6 +22,7 @@ CREATE TABLE "users" (
 CREATE TABLE "users_groups" (
   "user_id" int,
   "group_id" int,
+  "is_admin" boolean DEFAULT false,
   PRIMARY KEY ("user_id", "group_id")
 );
 
@@ -32,4 +34,3 @@ CREATE TABLE "groups" (
 ALTER TABLE "users_groups" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "users_groups" ADD FOREIGN KEY ("group_id") REFERENCES "groups" ("id");
-

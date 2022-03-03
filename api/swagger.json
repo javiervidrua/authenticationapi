@@ -21,22 +21,87 @@
       "name": "authorization"
     }
   },
+
   "paths": {
     "/test": {
       "get": {
-        "summary": "Test that everything works fine",
+        "summary": "Test that the API works",
         "tags": ["Test"],
-        "description": "Test that everything works fine",
+        "description": "Test that the API works",
         "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "Everything works",
+            "description": "API is working",
             "schema": {
               "$ref": "#/definitions/Test"
             }
           },
           "500": {
-            "description": "Things are not working"
+            "description": "API is not working"
+          }
+        }
+      }
+    },
+    "/user/signup": {
+      "post": {
+        "summary": "User sign up",
+        "tags": ["User"],
+        "description": "Sign the user up in the system",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User data to use to sign up",
+            "schema": {
+              "$ref": "#/definitions/UserSignup"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Sign up succeeded",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          },
+          "400": {
+            "description": "Invalid sign up data"
+          },
+          "500": {
+            "description": "Sign up failed"
+          }
+        }
+      }
+    },
+    "/user/signup/verification": {
+      "post": {
+        "summary": "User sign up verification",
+        "tags": ["User"],
+        "description": "Verify the sign up of the user in the system",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Token to verify the sign up of the user in the system",
+            "schema": {
+              "properties": "string"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Sign up verification succeeded",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          },
+          "400": {
+            "description": "Invalid sign up verification token"
+          },
+          "500": {
+            "description": "Sign up verification failed"
           }
         }
       }
@@ -45,21 +110,21 @@
       "post": {
         "summary": "User sign in",
         "tags": ["User"],
-        "description": "Sign in the user in the system",
+        "description": "Sign the user in to the system",
         "parameters": [
           {
             "name": "user",
             "in": "body",
             "description": "User credentials to use to sign in",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/UserSignin"
             }
           }
         ],
         "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "Sign in success",
+            "description": "Sign in succeeded",
             "schema": {
               "$ref": "#/definitions/UserEmail"
             }
@@ -68,7 +133,30 @@
             "description": "Invalid credentials"
           },
           "500": {
-            "description": "Error signing in"
+            "description": "Sign in failed"
+          }
+        }
+      }
+    },
+    "/user/signout": {
+      "post": {
+        "summary": "User sign out",
+        "tags": ["User"],
+        "description": "Sign the user out of the system",
+        "parameters": [],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Sign out succeeded",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          },
+          "400": {
+            "description": "Invalid credentials"
+          },
+          "500": {
+            "description": "Sign out failed"
           }
         }
       }
@@ -83,7 +171,35 @@
         }
       }
     },
-    "User": {
+    "UserSignup": {
+      "required": [
+        "email", "password", "full_name"
+      ],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "postal": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "UserSignin": {
       "properties": {
         "email": {
           "type": "string"
@@ -93,12 +209,12 @@
         }
       }
     },
-    "UserEmail":{
-        "properties": {
-          "email": {
-            "type": "string"
-          }
+    "UserEmail": {
+      "properties": {
+        "email": {
+          "type": "string"
         }
       }
+    }
   }
 }
