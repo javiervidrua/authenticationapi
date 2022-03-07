@@ -1,3 +1,4 @@
+const config = require('./libraries/config');
 const express = require("express");
 const morgan = require("morgan");
 const swaggerUi = require("swagger-ui-express");
@@ -16,5 +17,5 @@ app.use("/api/v1", authRoute);
 
 const port = 3000;
 app.listen(port, () => {
-  console.log(`API listening on port ${port}. Docs available at /api/v1/docs.`);
+  console.log(`API listening on port ${port}. The documentation is available at /api/v1/docs.`);
 });
