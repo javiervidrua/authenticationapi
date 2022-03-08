@@ -42,10 +42,10 @@
         }
       }
     },
-    "/user/signup": {
+    "/auth/signup": {
       "post": {
         "summary": "User sign up",
-        "tags": ["User"],
+        "tags": ["Auth"],
         "description": "Sign the user up in the system",
         "parameters": [
           {
@@ -53,7 +53,7 @@
             "in": "body",
             "description": "User data to use to sign up",
             "schema": {
-              "$ref": "#/definitions/UserSignup"
+              "$ref": "#/definitions/AuthSignup"
             }
           }
         ],
@@ -74,10 +74,10 @@
         }
       }
     },
-    "/user/signup/verification": {
+    "/auth/signup/verification": {
       "post": {
         "summary": "User sign up verification",
-        "tags": ["User"],
+        "tags": ["Auth"],
         "description": "Verify the sign up of the user in the system",
         "parameters": [
           {
@@ -106,10 +106,10 @@
         }
       }
     },
-    "/user/signin": {
+    "/auth/signin": {
       "post": {
         "summary": "User sign in",
-        "tags": ["User"],
+        "tags": ["Auth"],
         "description": "Sign the user in to the system",
         "parameters": [
           {
@@ -117,7 +117,7 @@
             "in": "body",
             "description": "User credentials to use to sign in",
             "schema": {
-              "$ref": "#/definitions/UserSignin"
+              "$ref": "#/definitions/AuthSignin"
             }
           }
         ],
@@ -138,10 +138,10 @@
         }
       }
     },
-    "/user/signout": {
+    "/auth/signout": {
       "post": {
         "summary": "User sign out",
-        "tags": ["User"],
+        "tags": ["Auth"],
         "description": "Sign the user out of the system",
         "parameters": [],
         "produces": ["application/json"],
@@ -171,7 +171,7 @@
         }
       }
     },
-    "UserSignup": {
+    "AuthSignup": {
       "required": [
         "email", "password", "full_name"
       ],
@@ -199,7 +199,7 @@
         }
       }
     },
-    "UserSignin": {
+    "AuthSignin": {
       "properties": {
         "email": {
           "type": "string"
