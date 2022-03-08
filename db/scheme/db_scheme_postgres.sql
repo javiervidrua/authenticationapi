@@ -5,10 +5,10 @@ CREATE TYPE "roles" AS ENUM (
 
 CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
-  "role" roles DEFAULT 'regular',
-  "verified" boolean DEFAULT false,
-  "verification_token" varchar UNIQUE,
-  "created" timestamp DEFAULT (now()),
+  "role" roles NOT NULL DEFAULT 'regular',
+  "verified" boolean NOT NULL DEFAULT false,
+  "verification_token" varchar UNIQUE NOT NULL,
+  "created" timestamp NOT NULL DEFAULT (now()),
   "last" timestamp,
   "email" varchar UNIQUE NOT NULL,
   "password" varchar NOT NULL,

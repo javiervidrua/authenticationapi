@@ -1,4 +1,5 @@
 const config = require('../libraries/config');
+const user = require('../libraries/user');
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
@@ -14,15 +15,39 @@ router.post("/signup",
   body("city").isLength({ min: 1, max: 50 }),
   body("postal").isLength({ min: 5, max: 7 }),
   body("phone").isMobilePhone(),
-  
-  (req, res) => {
-    // Validate the body
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
 
-    return res.status(200).json(req.body).end();
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      let ret = await user.add(req.body);
+
+      if (ret == -1) return res.status(400).json({
+        errors: [{
+          "value": ret,
+          "msg": "Email already in use",
+          "param": "email",
+          "location": "body"
+        }]
+      }).end();
+
+      // TODO: Send email with verification code
+
+      return res.status(200).json({ returnValue: ret.email }).end();
+    }
+    catch (error) {
+      res.status(500).json({
+        errors: [{
+          "value": error,
+          "msg": "An error ocurred",
+          "param": null,
+          "location": null
+        }]
+      })
+    }
   });
 
 module.exports = router;

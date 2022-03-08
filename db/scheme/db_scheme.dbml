@@ -2,10 +2,10 @@
 Table users {
   // Internal
   id int [pk, increment]
-  role roles [default: "regular"]
-  verified boolean [default: false]
-  verification_token varchar [unique]
-  created timestamp [default: `now()`]
+  role roles [default: "regular", not null]
+  verified boolean [default: false, not null]
+  verification_token varchar [unique, not null]
+  created timestamp [default: `now()`, not null]
   last timestamp
   
   // Auth

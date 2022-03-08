@@ -23,21 +23,21 @@
   },
 
   "paths": {
-    "/test": {
+    "/test/db": {
       "get": {
-        "summary": "Test that the API works",
+        "summary": "Test that the API can connect to the database",
         "tags": ["Test"],
-        "description": "Test that the API works",
+        "description": "Test that the API can connect to the database",
         "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "API is working",
+            "description": "API can connect to the database",
             "schema": {
               "$ref": "#/definitions/Test"
             }
           },
           "500": {
-            "description": "API is not working"
+            "description": "API cannot connect to the database"
           }
         }
       }
