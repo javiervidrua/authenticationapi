@@ -34,7 +34,7 @@ router.post("/signup",
         }]
       }).end();
 
-      // TODO: Send email with verification code
+      // TODO: Send email with verification token
 
       return res.status(200).json({ returnValue: ret.email }).end();
     }

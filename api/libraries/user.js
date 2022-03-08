@@ -1,13 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../libraries/sequelize');
 const { v1: uuidv1, v4: uuidv4, } = require('uuid');
-const Users = require('../models/users')(sequelize, DataTypes);
+const models = require('../models/init-models')(sequelize);
 
 async function add(user) {
   await sequelize.sync();
 
   try {
-    const newUser = await Users.create({
+    const newUser = await models.users.create({
       verification_token: uuidv4(),
       email: user.email,
       password: user.password,
