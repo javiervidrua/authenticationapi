@@ -7,7 +7,7 @@ CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
   "role" roles DEFAULT 'regular',
   "verified" boolean DEFAULT false,
-  "verification_token" string UNIQUE,
+  "verification_token" varchar UNIQUE,
   "created" timestamp DEFAULT (now()),
   "last" timestamp,
   "email" varchar UNIQUE NOT NULL,

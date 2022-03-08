@@ -4,7 +4,7 @@ Table users {
   id int [pk, increment]
   role roles [default: "regular"]
   verified boolean [default: false]
-  verification_token string [unique]
+  verification_token varchar [unique]
   created timestamp [default: `now()`]
   last timestamp
   
