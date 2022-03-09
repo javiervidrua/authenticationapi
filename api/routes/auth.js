@@ -23,20 +23,19 @@ router.post("/signup",
         return res.status(400).json({ errors: errors.array() });
       }
 
-      let ret = await user.add(req.body);
-
-      if (ret == -1) return res.status(400).json({
-        errors: [{
-          "value": ret,
-          "msg": "Email already in use",
-          "param": "email",
-          "location": "body"
-        }]
-      }).end();
-
-      // TODO: Send email with verification token
-
-      return res.status(200).json({ returnValue: ret.email }).end();
+      user.add(req.body).then((data) => {
+        return res.status(200).json({ email: data.email }).end();
+      })
+      .catch((err) => {
+        return res.status(400).json({
+          errors: [{
+            "value": err.value,
+            "msg": err.msg,
+            "param": "email",
+            "location": "body"
+          }]
+        }).end();
+      });
     }
     catch (error) {
       res.status(500).json({
