@@ -1,10 +1,9 @@
 const sequelize = require('../libraries/sequelize');
 const mail = require('../libraries/mail');
-const { v1: uuidv1, v4: uuidv4, } = require('uuid');
 const models = require('../models/init-models')(sequelize);
+const { v1: uuidv1, v4: uuidv4, } = require('uuid');
 
 function add(user) {
-  //{}
   return new Promise(async (resolve, reject) => {
     await sequelize.sync();
 
@@ -34,5 +33,26 @@ function add(user) {
     }
   });
 }
-
 module.exports.add = add;
+
+function verify(token) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      const newUser = await models.users.update({ verified: true }, {
+        where: {
+          verification_token: token
+        },
+        returning: true
+      });
+
+      resolve(newUser[1][0]); // Return the user object. Weird array, something like: [1, [{key: val}]]
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: "Wrong verification token" });
+    }
+  })
+}
+module.exports.verify = verify;
