@@ -2,6 +2,7 @@ const sequelize = require('../libraries/sequelize');
 const mail = require('../libraries/mail');
 const models = require('../models/init-models')(sequelize);
 const { v1: uuidv1, v4: uuidv4, } = require('uuid');
+const bcrypt = require('bcrypt');
 
 function add(user) {
   return new Promise(async (resolve, reject) => {
@@ -12,7 +13,7 @@ function add(user) {
       const newUser = await models.users.create({
         verification_token: token,
         email: user.email,
-        password: user.password,
+        password: await bcrypt.hash(user.password, 10), // 10 rounds
         full_name: user.full_name,
         address: user.address,
         city: user.city,
