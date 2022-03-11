@@ -1,12 +1,10 @@
-const config = require('../libraries/config');
 const user = require('../libraries/user');
 const sequelize = require('../libraries/sequelize');
 const models = require('../models/init-models')(sequelize);
 const express = require("express");
 const router = express.Router();
 const { body, query, validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
-const jwtSecret = config.jwtSecret;
+const passport = require('../libraries/passport');
 
 router.post("/signup",
   // Body validation
@@ -25,7 +23,7 @@ router.post("/signup",
         return res.status(400).json({ errors: errors.array() });
       }
 
-      user.add(req.body)
+      user.signup(req.body)
         .then((data) => {
           return res.status(200).json({ email: data.email }).end();
         })
@@ -48,6 +46,7 @@ router.post("/signup/verification",
   query('token').exists().isLength(36).custom(value => {
     // This is a custom validator that fails if the token does not exist or if the user is already verified
     // Otherwise, the request can get processed
+    // This could be done in user.verify but I wanted to try to create my own custom express validator
     return models.users.findAll({
       where: {
         verification_token: value
@@ -86,5 +85,13 @@ router.post("/signup/verification",
     }
   }
 );
+
+router.post('/signin', passport.authenticate);
+
+router.post('/signout', passport.authorize, (req, res) => {
+  res.clearCookie('jwt');
+  
+  return res.status(200).json({ email: req.userEmail}).end();
+});
 
 module.exports = router;

@@ -1,3 +1,5 @@
+var fs = require('fs');
+var https = require('https');
 const config = require('./libraries/config');
 const express = require("express");
 const router = express.Router();
@@ -24,6 +26,10 @@ router.use("/test", testRoute);
 
 app.use("/api/v1", router);
 
-app.listen(config.port, () => {
-  console.log(`API listening on port ${config.port}. The documentation is available at /api/v1/docs.`);
-});
+const privateKey = fs.readFileSync('./cert/cert.key', 'utf8');
+const certificate = fs.readFileSync('./cert/cert.crt', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+var httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(config.port);
+console.log(`API listening on port ${config.port}. The documentation is available at /api/v1/docs.`);

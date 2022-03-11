@@ -9,7 +9,7 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3000",
+  "host": "https://localhost:3443",
   "basePath": "/api/v1",
   "schemes": ["http", "https"],
   "consumes": ["application/json"],
@@ -17,14 +17,17 @@
   "securityDefinitions": {
     "ApiKeyAuth": {
       "type": "apiKey",
-      "in": "headers",
-      "name": "authorization"
+      "in": "cookies",
+      "name": "jwt"
     }
   },
 
   "paths": {
     "/test/db": {
       "get": {
+        "security": [
+          { "ApiKeyAuth": [] }
+        ],
         "summary": "Test that the API can connect to the database",
         "tags": ["Test"],
         "description": "Test that the API can connect to the database",
@@ -140,6 +143,9 @@
     },
     "/auth/signout": {
       "post": {
+        "security": [
+          { "ApiKeyAuth": [] }
+        ],
         "summary": "User sign out",
         "tags": ["Auth"],
         "description": "Sign the user out of the system",

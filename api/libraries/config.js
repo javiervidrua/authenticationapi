@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+module.exports.port = process.env.API_PORT;
+module.exports.host = process.env.API_HOST;
 module.exports.jwtSecret = process.env.API_JWT_SECRET;
 module.exports.postgresHost = process.env.API_POSTGRES_HOST;
 module.exports.postgresPort = process.env.API_POSTGRES_PORT;

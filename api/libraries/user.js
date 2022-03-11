@@ -1,10 +1,11 @@
+const config = require('../libraries/config');
 const sequelize = require('../libraries/sequelize');
 const mail = require('../libraries/mail');
 const models = require('../models/init-models')(sequelize);
 const { v1: uuidv1, v4: uuidv4, } = require('uuid');
 const bcrypt = require('bcrypt');
 
-function add(user) {
+function signup(user) {
   return new Promise(async (resolve, reject) => {
     await sequelize.sync();
 
@@ -21,7 +22,7 @@ function add(user) {
         phone: user.phone,
       });
 
-      mail.send(user.email, 'Authentication API sign up', `Click on the following link to verify your account:\n http://localhost:3000/api/v1/auth/signup/verification?token=${token}`)
+      mail.send(user.email, 'Authentication API sign up', `Click on the following link to verify your account:\n ${config.host}/${config.port}/api/v1/auth/signup/verification?token=${token}`)
         .then((data) => resolve(newUser))
         .catch((err) => {
           console.log(err);
@@ -34,7 +35,7 @@ function add(user) {
     }
   });
 }
-module.exports.add = add;
+module.exports.signup = signup;
 
 function verify(token) {
   return new Promise(async (resolve, reject) => {
