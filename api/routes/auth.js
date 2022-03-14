@@ -86,12 +86,45 @@ router.get("/signup/verify",
   }
 );
 
-router.post('/signin', passport.authenticate);
+router.post('/signin',
+  // Body validation
+  body("email").isEmail().normalizeEmail(),
+  body("password").isStrongPassword(),
+
+  passport.authenticate,
+
+  (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      models.users.update({ last: new Date() }, {
+        where: { email: req.body.email },
+        returning: true
+      })
+        .then((user) => {
+          return res.status(200).json({ email: user[1][0].email }).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
 
 router.post('/signout', passport.authorize, (req, res) => {
   res.clearCookie('jwt');
-  
-  return res.status(200).json({ email: req.userEmail}).end();
+
+  return res.status(200).json({ email: req.userEmail }).end();
 });
 
 module.exports = router;

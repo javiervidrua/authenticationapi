@@ -70,7 +70,9 @@ const authenticate = (req, res, next) => {
       const token = jwt.sign({ email: user.email, expires: expireDate }, config.jwtSecret, { expiresIn: '24h' });
       res.cookie('jwt', token, { expires: expireDate, httpOnly: true, secure: true }); // { secure: true } will only work with HTTPS
 
-      return res.status(200).json({ email: user.email }).end();
+      //return res.status(200).json({ email: user.email }).end();
+      req.userEmail = user.email;
+      return next();
     });
   })(req, res);
 };
