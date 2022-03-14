@@ -14,10 +14,10 @@ const mailTransporter = nodemailer.createTransport({
   service: config.mailService,
 });
 
-function send(to, subject, text) {
+function send(header, to, subject, text) {
   return new Promise((resolve, reject) => {
     let mailDetails = {
-      from: `Account verification <${config.mailUsername}>`, // https://nodemailer.com/message/addresses/
+      from: `${header} <${config.mailUsername}>`, // https://nodemailer.com/message/addresses/
       to: to,
       subject: subject,
       text: text

@@ -4,6 +4,40 @@ const mail = require('../libraries/mail');
 const models = require('../models/init-models')(sequelize);
 const { v1: uuidv1, v4: uuidv4, } = require('uuid');
 const bcrypt = require('bcrypt');
+const moment = require('moment');
+
+function recoverpassword(user) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      const token = uuidv4();
+      const date = moment();
+      date.add(-1, 'y'); // Subtract 1 year so we know if the link sent in the email is valid (if the user signs in, the 'last' attribute will be updated in the users table)
+
+      let updatedUser = await models.users.update({
+        verification_token: token,
+        last: date
+      }, {
+        where: { email: user.email },
+        returning: true
+      });
+      updatedUser = updatedUser[1][0].dataValues;
+
+      mail.send('Password recovery', user.email, 'Authentication API password recovery', `Make a POST request with a JSON object in the body that follows the following structure:\n{\n\t"password": "yourNewAndSecurePassword"\n}\nto the following URL:\n ${config.host}:${config.port}/api/v1/auth/setpassword?token=${token}`) // https://css-tricks.com/html-forms-in-html-emails/
+        .then((data) => resolve(updatedUser))
+        .catch((err) => {
+          console.log(err);
+          reject({ value: -2, msg: "Error sending email with the link to set the new password" });
+        });
+    }
+    catch (error) {
+      console.log(error)
+      resolve(user);
+    }
+  });
+}
+module.exports.recoverpassword = recoverpassword;
 
 function signup(user) {
   return new Promise(async (resolve, reject) => {
@@ -22,7 +56,7 @@ function signup(user) {
         phone: user.phone,
       });
 
-      mail.send(user.email, 'Authentication API sign up', `Click on the following link to verify your account:\n ${config.host}:${config.port}/api/v1/auth/signup/verify?token=${token}`)
+      mail.send('Account verification', user.email, 'Authentication API sign up', `Click on the following link to verify your account:\n ${config.host}:${config.port}/api/v1/auth/signup/verify?token=${token}`)
         .then((data) => resolve(newUser))
         .catch((err) => {
           console.log(err);

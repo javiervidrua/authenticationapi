@@ -24,8 +24,8 @@ router.post("/signup",
       }
 
       user.signup(req.body)
-        .then((data) => {
-          return res.status(200).json({ email: data.email }).end();
+        .then((user) => {
+          return res.status(200).json({ email: user.email }).end();
         })
         .catch((err) => {
           return res.status(400).json({
@@ -69,8 +69,8 @@ router.get("/signup/verify",
       }
 
       user.verify(req.query.token)
-        .then((data) => {
-          return res.status(200).json({ email: data.email }).end();
+        .then((user) => {
+          return res.status(200).json({ email: user.email }).end();
         })
         .catch((err) => {
           return res.status(400).json({
@@ -108,12 +108,14 @@ router.post('/signin',
           return res.status(200).json({ email: user[1][0].email }).end();
         })
         .catch((err) => {
+          res.clearCookie('jwt');
           return res.status(400).json({
             errors: [err]
           }).end();
         });
     }
     catch (error) {
+      res.clearCookie('jwt');
       return res.status(500).json({
         errors: [error]
       })
@@ -126,5 +128,27 @@ router.post('/signout', passport.authorize, (req, res) => {
 
   return res.status(200).json({ email: req.userEmail }).end();
 });
+
+router.post('/recoverpassword',
+  // Body validation
+  body("email").isEmail().normalizeEmail(),
+
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      await user.recoverpassword(req.body);
+      return res.status(200).json({ email: req.body.email }).end();
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
 
 module.exports = router;

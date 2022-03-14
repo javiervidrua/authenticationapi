@@ -191,7 +191,7 @@
             }
           },
           "500": {
-            "description": "Sign in failed"
+            "description": "Password recovery process failed"
           }
         }
       }
