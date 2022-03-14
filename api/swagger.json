@@ -77,7 +77,7 @@
         }
       }
     },
-    "/auth/signup/verification": {
+    "/auth/signup/verify": {
       "get": {
         "summary": "User sign up verification",
         "tags": ["Auth"],
@@ -163,6 +163,35 @@
           },
           "500": {
             "description": "Sign out failed"
+          }
+        }
+      }
+    },
+    "/auth/recoverpassword": {
+      "post": {
+        "summary": "User password recovery",
+        "tags": ["Auth"],
+        "description": "Let the user start the password recovery process",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "body",
+            "description": "User email to send the verification link to",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Password recovery email sent to the user with the email provided in case it exists",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          },
+          "500": {
+            "description": "Sign in failed"
           }
         }
       }

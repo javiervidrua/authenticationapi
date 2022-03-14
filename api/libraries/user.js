@@ -22,7 +22,7 @@ function signup(user) {
         phone: user.phone,
       });
 
-      mail.send(user.email, 'Authentication API sign up', `Click on the following link to verify your account:\n ${config.host}:${config.port}/api/v1/auth/signup/verification?token=${token}`)
+      mail.send(user.email, 'Authentication API sign up', `Click on the following link to verify your account:\n ${config.host}:${config.port}/api/v1/auth/signup/verify?token=${token}`)
         .then((data) => resolve(newUser))
         .catch((err) => {
           console.log(err);

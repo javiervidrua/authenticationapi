@@ -41,7 +41,7 @@ router.post("/signup",
   }
 );
 
-router.get("/signup/verification",
+router.get("/signup/verify",
   // Query param validation
   query('token').exists().isLength(36).custom(value => {
     // This is a custom validator that fails if the token does not exist or if the user is already verified
