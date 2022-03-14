@@ -78,7 +78,7 @@
       }
     },
     "/auth/signup/verification": {
-      "post": {
+      "get": {
         "summary": "User sign up verification",
         "tags": ["Auth"],
         "description": "Verify the sign up of the user in the system",
