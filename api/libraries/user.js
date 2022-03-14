@@ -24,7 +24,7 @@ function recoverpassword(user) {
       });
       updatedUser = updatedUser[1][0].dataValues;
 
-      mail.send('Password recovery', user.email, 'Authentication API password recovery', `Make a POST request with a JSON object in the body that follows the following structure:\n{\n\t"password": "yourNewAndSecurePassword"\n}\nto the following URL:\n ${config.host}:${config.port}/api/v1/auth/setpassword?token=${token}`) // https://css-tricks.com/html-forms-in-html-emails/
+      mail.send('Password recovery', user.email, 'Authentication API password recovery', `Make a POST request with a JSON object in the body that uses the following structure:\n{\n\t"password": "yourNewAndSecurePassword"\n}\nto the following URL:\n ${config.host}:${config.port}/api/v1/auth/setpassword?token=${token}`) // https://css-tricks.com/html-forms-in-html-emails/
         .then((data) => resolve(updatedUser))
         .catch((err) => {
           console.log(err);
@@ -38,6 +38,31 @@ function recoverpassword(user) {
   });
 }
 module.exports.recoverpassword = recoverpassword;
+
+function setpassword(token, password) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      let updatedUser = await models.users.update({
+        last: new Date(),
+        password: await bcrypt.hash(password, 10), // 10 rounds
+      }, {
+        where: {
+          verification_token: token
+        },
+        returning: true
+      });
+
+      resolve(updatedUser[1][0].dataValues)
+    }
+    catch (error) {
+      console.log(error)
+      reject(user);
+    }
+  });
+}
+module.exports.setpassword = setpassword;
 
 function signup(user) {
   return new Promise(async (resolve, reject) => {

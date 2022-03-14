@@ -5,6 +5,7 @@ const express = require("express");
 const router = express.Router();
 const { body, query, validationResult } = require('express-validator');
 const passport = require('../libraries/passport');
+const moment = require('moment');
 
 router.post("/signup",
   // Body validation
@@ -144,6 +145,60 @@ router.post('/recoverpassword',
       return res.status(200).json({ email: req.body.email }).end();
     }
     catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
+
+router.post('/setpassword',
+  // Query param validation
+  query('token').exists().isLength(36).custom(value => {
+    // This is a custom validator that fails if the token does not exist or if the user is already verified
+    // Otherwise, the request can get processed
+    // This could be done in user.verify but I wanted to try to create my own custom express validator
+    return models.users.findAll({
+      where: {
+        verification_token: value
+      }
+    })
+      .then((datasets) => {
+        let user = datasets[0].dataValues;
+        if (user.verified == false) return Promise.reject('Wrong password recovery token'); // Only verified users can reset their password
+        
+        const date = moment();
+        date.add(-1, 'y');
+        date.add(-15, 'm');
+        if (user.last > date) return Promise.reject('Wrong password recovery token'); // Password recovery token is only valid for 15 minutes
+      })
+      .catch((err) => {
+        return Promise.reject('Wrong password recovery token');
+      });
+  }),
+
+  // Body validation
+  body("password").isStrongPassword(),
+
+  (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      user.setpassword(req.query.token, req.body.password)
+        .then((user) => {
+          return res.status(200).json({ email: user.email }).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      res.clearCookie('jwt');
       return res.status(500).json({
         errors: [error]
       })
