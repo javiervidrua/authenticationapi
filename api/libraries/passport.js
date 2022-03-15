@@ -36,7 +36,10 @@ const cookie_extractor = function (req) {
 };
 passport.use(new JWTStrategy({ jwtFromRequest: ExtractJWT.fromExtractors([cookie_extractor]), secretOrKey: config.jwtSecret }, function (jwtPayload, callback) {
   models.users.findOne({
-    where: { email: jwtPayload.email }
+    where: {
+      email: jwtPayload.email,
+      verified: true
+    }
   })
     .then((user) => {
       return callback(null, user, { message: 'Authentication successful' });

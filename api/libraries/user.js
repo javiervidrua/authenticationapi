@@ -6,6 +6,68 @@ const { v1: uuidv1, v4: uuidv4, } = require('uuid');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
 
+function remove(userEmail, userPassword) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      // If the users belongs to a group in which he is the only admin, return error with instructions to either add an admin to the group or to delete it
+
+      // Otherwise, delete the user
+      let user = await models.users.findOne({
+        where: {
+          email: userEmail
+        }
+      });
+
+      user = user.dataValues;
+
+      if (! (await bcrypt.compare(userPassword, user.password))) reject({ value: -2, msg: "Wrong credentials" });
+
+      await models.users.destroy({
+        where: {
+          email: userEmail
+        }
+      });
+
+      // Remove the sensitive data
+      delete user.id;
+      delete user.verification_token;
+      delete user.password;
+
+      resolve(user);
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: "Wrong credentials" });
+    }
+  })
+}
+module.exports.remove = remove;
+
+function get(userEmail) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      const user = await models.users.findOne({
+        attributes: ['email','role','verified','created','last','full_name','address','city','postal','phone']
+      },{
+        where: {
+          email: userEmail
+        }
+      });
+
+      resolve(user);
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: "Wrong credentials" });
+    }
+  })
+}
+module.exports.get = get;
+
 function recoverpassword(user) {
   return new Promise(async (resolve, reject) => {
     await sequelize.sync();
@@ -96,29 +158,6 @@ function signup(user) {
 }
 module.exports.signup = signup;
 
-function get(userEmail) {
-  return new Promise(async (resolve, reject) => {
-    await sequelize.sync();
-
-    try {
-      const user = await models.users.findOne({
-        attributes: ['email','role','verified','created','last','full_name','address','city','postal','phone']
-      },{
-        where: {
-          email: userEmail
-        }
-      });
-
-      resolve(user);
-    }
-    catch (error) {
-      console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
-    }
-  })
-}
-module.exports.get = get;
-
 function update(userEmail, userData) {
   return new Promise(async (resolve, reject) => {
     await sequelize.sync();
@@ -134,7 +173,6 @@ function update(userEmail, userData) {
 
       // Remove the sensitive data
       delete newUser.id;
-      delete newUser.verified;
       delete newUser.verification_token;
       delete newUser.password;
 
