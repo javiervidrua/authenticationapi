@@ -278,6 +278,33 @@
             "description": "Failed getting the user's data"
           }
         }
+      },
+      "delete": {
+        "summary": "Delete the user's data",
+        "tags": ["User"],
+        "description": "Let the user delete his data",
+        "parameters": [
+          {
+            "name": "password",
+            "in": "body",
+            "description": "User's password",
+            "schema": {
+              "$ref": "#/definitions/UserPassword"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User's data",
+            "schema": {
+              "$ref": "#/definitions/UserGet"
+            }
+          },
+          "500": {
+            "description": "Failed deleting the user's data"
+          }
+        }
       }
     }
   },
