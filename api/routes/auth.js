@@ -124,11 +124,15 @@ router.post('/signin',
   }
 );
 
-router.post('/signout', passport.authorize, (req, res) => {
-  res.clearCookie('jwt');
+router.post('/signout',
+  passport.authorize,
 
-  return res.status(200).json({ email: req.userEmail }).end();
-});
+  (req, res) => {
+    res.clearCookie('jwt');
+
+    return res.status(200).json({ email: req.userEmail }).end();
+  }
+);
 
 router.post('/recoverpassword',
   // Body validation
@@ -166,7 +170,7 @@ router.post('/setpassword',
       .then((datasets) => {
         let user = datasets[0].dataValues;
         if (user.verified == false) return Promise.reject('Wrong password recovery token'); // Only verified users can reset their password
-        
+
         const date = moment();
         date.add(-1, 'y');
         date.add(-15, 'm');

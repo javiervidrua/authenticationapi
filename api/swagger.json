@@ -118,7 +118,7 @@
           {
             "name": "user",
             "in": "body",
-            "description": "User credentials to use to sign in",
+            "description": "Credentials to use to sign in",
             "schema": {
               "$ref": "#/definitions/AuthSignin"
             }
@@ -232,6 +232,53 @@
           }
         }
       }
+    },
+    "/user": {
+      "get": {
+        "summary": "Get the user's data",
+        "tags": ["User"],
+        "description": "Let the user get his data",
+        "parameters": [],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User's data",
+            "schema": {
+              "$ref": "#/definitions/UserGet"
+            }
+          },
+          "500": {
+            "description": "Failed getting the user's data"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update the user's data",
+        "tags": ["User"],
+        "description": "Let the user update his data",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User's new data",
+            "schema": {
+              "$ref": "#/definitions/UserPut"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "User's data",
+            "schema": {
+              "$ref": "#/definitions/UserGet"
+            }
+          },
+          "500": {
+            "description": "Failed getting the user's data"
+          }
+        }
+      }
     }
   },
 
@@ -291,6 +338,61 @@
     "UserPassword": {
       "properties": {
         "password": {
+          "type": "string"
+        }
+      }
+    },
+    "UserGet": {
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "postal": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "UserPut": {
+      "properties": {
+        "full_name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "postal": {
+          "type": "string"
+        },
+        "phone": {
           "type": "string"
         }
       }

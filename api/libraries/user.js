@@ -96,6 +96,58 @@ function signup(user) {
 }
 module.exports.signup = signup;
 
+function get(userEmail) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      const user = await models.users.findOne({
+        attributes: ['email','role','verified','created','last','full_name','address','city','postal','phone']
+      },{
+        where: {
+          email: userEmail
+        }
+      });
+
+      resolve(user);
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: "Wrong credentials" });
+    }
+  })
+}
+module.exports.get = get;
+
+function update(userEmail, userData) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      let newUser = await models.users.update(userData, {
+        where: {
+          email: userEmail
+        },
+        returning: true
+      });
+      newUser = newUser[1][0].dataValues;
+
+      // Remove the sensitive data
+      delete newUser.id;
+      delete newUser.verified;
+      delete newUser.verification_token;
+      delete newUser.password;
+
+      resolve(newUser); // Return the user object. Weird array, something like: [1, [{key: val}]]
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: "Wrong credentials" });
+    }
+  })
+}
+module.exports.update = update;
+
 function verify(token) {
   return new Promise(async (resolve, reject) => {
     await sequelize.sync();

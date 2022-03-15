@@ -5,7 +5,8 @@ const config = require('./config');
 const sequelize = new Sequelize(config.postgresDatabase, config.postgresUsername, config.postgresPassword, {
   dialect: 'postgres',
   host: config.postgresHost,
-  port: config.postgresPort
+  port: config.postgresPort,
+  //logging: false
 });
 
 module.exports = sequelize;

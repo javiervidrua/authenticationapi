@@ -13,6 +13,7 @@ require('./libraries/passport');
 
 const authRoute = require("./routes/auth");
 const testRoute = require("./routes/test");
+const userRoute = require("./routes/user");
 
 const app = express();
 app.use(morgan("combined"));
@@ -23,6 +24,7 @@ app.use(cookieParser());
 router.use("/auth", authRoute);
 router.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 router.use("/test", testRoute);
+router.use("/user", userRoute);
 
 app.use("/api/v1", router);
 
