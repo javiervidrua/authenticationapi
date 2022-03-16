@@ -9,11 +9,18 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "https://localhost:3443",
+  "host": "localhost:3443",
   "basePath": "/api/v1",
-  "schemes": ["http", "https"],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "securityDefinitions": {
     "ApiKeyAuth": {
       "type": "apiKey",
@@ -21,17 +28,22 @@
       "name": "jwt"
     }
   },
-
   "paths": {
     "/test/db": {
       "get": {
         "security": [
-          { "ApiKeyAuth": [] }
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "Test that the API can connect to the database",
-        "tags": ["Test"],
+        "tags": [
+          "Test"
+        ],
         "description": "Test that the API can connect to the database",
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "API can connect to the database",
@@ -48,7 +60,9 @@
     "/auth/signup": {
       "post": {
         "summary": "User sign up",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "Sign the user up in the system",
         "parameters": [
           {
@@ -60,7 +74,9 @@
             }
           }
         ],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "Sign up succeeded",
@@ -80,7 +96,9 @@
     "/auth/signup/verify": {
       "get": {
         "summary": "User sign up verification",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "Verify the sign up of the user in the system",
         "parameters": [
           {
@@ -92,7 +110,9 @@
             }
           }
         ],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "Sign up verification succeeded",
@@ -112,7 +132,9 @@
     "/auth/signin": {
       "post": {
         "summary": "User sign in",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "Sign the user in to the system",
         "parameters": [
           {
@@ -124,7 +146,9 @@
             }
           }
         ],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "Sign in succeeded",
@@ -144,13 +168,19 @@
     "/auth/signout": {
       "post": {
         "security": [
-          { "ApiKeyAuth": [] }
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "User sign out",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "Sign the user out of the system",
         "parameters": [],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "Sign out succeeded",
@@ -170,7 +200,9 @@
     "/auth/recoverpassword": {
       "post": {
         "summary": "User password recovery",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "Let the user start the password recovery process",
         "parameters": [
           {
@@ -182,7 +214,9 @@
             }
           }
         ],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "Password recovery email sent to the user with the email provided in case it exists",
@@ -199,7 +233,9 @@
     "/auth/setpassword": {
       "post": {
         "summary": "User password set",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "description": "Let the user set the password",
         "parameters": [
           {
@@ -219,7 +255,9 @@
             }
           }
         ],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "New password set",
@@ -235,26 +273,42 @@
     },
     "/user": {
       "get": {
-        "summary": "Get the user's data",
-        "tags": ["User"],
-        "description": "Let the user get his data",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Retrieve the user's data",
+        "tags": [
+          "User"
+        ],
+        "description": "Let the user retrieve his data",
         "parameters": [],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "User's data",
             "schema": {
-              "$ref": "#/definitions/UserGet"
+              "$ref": "#/definitions/UserData"
             }
           },
           "500": {
-            "description": "Failed getting the user's data"
+            "description": "Failed retrieving the user's data"
           }
         }
       },
       "put": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "summary": "Update the user's data",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "Let the user update his data",
         "parameters": [
           {
@@ -266,22 +320,31 @@
             }
           }
         ],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "User's data",
             "schema": {
-              "$ref": "#/definitions/UserGet"
+              "$ref": "#/definitions/UserData"
             }
           },
           "500": {
-            "description": "Failed getting the user's data"
+            "description": "Failed updating the user's data"
           }
         }
       },
       "delete": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "summary": "Delete the user's data",
-        "tags": ["User"],
+        "tags": [
+          "User"
+        ],
         "description": "Let the user delete his data",
         "parameters": [
           {
@@ -293,12 +356,14 @@
             }
           }
         ],
-        "produces": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
             "description": "User's data",
             "schema": {
-              "$ref": "#/definitions/UserGet"
+              "$ref": "#/definitions/UserData"
             }
           },
           "500": {
@@ -306,9 +371,361 @@
           }
         }
       }
+    },
+    "/group": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Retrieve the user's groups",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user retrieve a list of the groups that he belongs to",
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User's groups",
+            "schema": {
+              "$ref": "#/definitions/UserGroups"
+            }
+          },
+          "500": {
+            "description": "Failed retrieving the user's groups"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Create a group",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user create a new group",
+        "parameters": [
+          {
+            "name": "group",
+            "in": "body",
+            "description": "Group",
+            "schema": {
+              "$ref": "#/definitions/GroupName"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Group created",
+            "schema": {
+              "$ref": "#/definitions/GroupName"
+            }
+          },
+          "500": {
+            "description": "Failed creating the group"
+          }
+        }
+      }
+    },
+    "/group/:id": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Retrieve the information of the specified group",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user retrieve the information of the specified group",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the group to retrieve the details of",
+            "schema": {
+              "properties": "string"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Group's data",
+            "schema": {
+              "$ref": "#/definitions/GroupData"
+            }
+          },
+          "500": {
+            "description": "Failed retrieving the group's information"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Modify the specified group",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user modify the details of the specified group",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the group to modify",
+            "schema": {
+              "properties": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "body",
+            "description": "Group",
+            "schema": {
+              "$ref": "#/definitions/GroupName"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Group updated",
+            "schema": {
+              "$ref": "#/definitions/GroupName"
+            }
+          },
+          "500": {
+            "description": "Failed updating the group"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Remove the specified group",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user remove the specified group",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the group to remove",
+            "schema": {
+              "properties": "string"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Group's name",
+            "schema": {
+              "$ref": "#/definitions/GroupName"
+            }
+          },
+          "500": {
+            "description": "Failed removing the group"
+          }
+        }
+      }
+    },
+    "/group/:id/user": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Retrieve the users of the specified group",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user retrieve a list of the users of the specified group",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the target group",
+            "schema": {
+              "properties": "string"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Group's members",
+            "schema": {
+              "$ref": "#/definitions/GroupUsers"
+            }
+          },
+          "500": {
+            "description": "Failed retrieving the group's users"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Add an user to the specified group",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user add another user to the specified group",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the target group",
+            "schema": {
+              "properties": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User added to the group",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          },
+          "500": {
+            "description": "Failed adding the user to the specified group"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Modify the privileges of the specified user in the specified group",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user modify the privileges of the specified user in the specified group",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the target group",
+            "schema": {
+              "properties": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User",
+            "schema": {
+              "$ref": "#/definitions/UserPrivileges"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "User's privileges updated",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          },
+          "500": {
+            "description": "Failed updating the users privileges"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Remove the specified user from the specified group",
+        "tags": [
+          "Group"
+        ],
+        "description": "Let the user remove an user from the specified group (The user cannot remove itself if he's the only administrator of said group)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the target group",
+            "schema": {
+              "properties": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User to remove from the specified group",
+            "schema": {
+              "$ref": "#/definitions/UserEmail"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Group's name",
+            "schema": {
+              "$ref": "#/definitions/GroupName"
+            }
+          },
+          "500": {
+            "description": "Failed removing the group"
+          }
+        }
+      }
     }
   },
-
   "definitions": {
     "Test": {
       "properties": {
@@ -319,7 +736,9 @@
     },
     "AuthSignup": {
       "required": [
-        "email", "password", "full_name"
+        "email",
+        "password",
+        "full_name"
       ],
       "properties": {
         "email": {
@@ -369,7 +788,7 @@
         }
       }
     },
-    "UserGet": {
+    "UserData": {
       "properties": {
         "email": {
           "type": "string"
@@ -421,6 +840,48 @@
         },
         "phone": {
           "type": "string"
+        }
+      }
+    },
+    "UserGroups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/GroupData"
+      }
+    },
+    "GroupName": {
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "GroupData": {
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "isAdmin": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GroupUsers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/UserEmail"
+      }
+    },
+    "UserPrivileges": {
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "isAdmin": {
+          "type": "boolean"
         }
       }
     }
