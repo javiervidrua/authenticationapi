@@ -32,6 +32,49 @@ function add(userEmail, groupName) {
 }
 module.exports.add = add;
 
+function add_user(userEmail, id, email) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      const user = await models.users.findOne({
+        where: {
+          email: userEmail
+        }
+      });
+
+      const groups = await models.users_groups.findAll({
+        where: {
+          user_id: user.id,
+          group_id: id
+        }
+      });
+
+      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+
+      const newUser = await models.users.findOne({
+        where: {
+          email: email
+        }
+      });
+
+      const users_groups = await models.users_groups.create({
+        user_id: newUser.id,
+        group_id: id,
+        is_admin: false
+      });
+      
+      resolve(newUser);
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: `User with email: ${email} already belongs to the group with id: ${id}` });
+    }
+  })
+}
+module.exports.add_user = add_user;
+
 function get(userEmail) {
   return new Promise(async (resolve, reject) => {
     await sequelize.sync();
@@ -116,6 +159,49 @@ function get_by_id(userEmail, id) {
   })
 }
 module.exports.get_by_id = get_by_id;
+
+function get_users(userEmail, id) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      const user = await models.users.findOne({
+        where: {
+          email: userEmail
+        }
+      });
+
+      const groups = await models.users_groups.findAll({
+        where: {
+          user_id: user.id,
+          group_id: id
+        }
+      });
+
+      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+
+      const users_groups = await models.users_groups.findAll({
+        where: {
+          group_id: id
+        }
+      });
+
+      const users = await models.users.findAll({
+        where: {
+          id: users_groups.map( (user) => { return user.dataValues.user_id })
+        }
+      });
+      
+      resolve(users.map( (user) => { return { email: user.email } }));
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: "Wrong credentials" });
+    }
+  })
+}
+module.exports.get_users = get_users;
 
 function remove(userEmail, id) {
   return new Promise(async (resolve, reject) => {

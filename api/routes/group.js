@@ -56,10 +56,18 @@ router.post("/",
 );
 
 router.get("/:id",
+  // Param validation
+  param("id").isInt(),
+
   passport.authorize,
 
   (req, res) => {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
       const { id } = req.params;
 
       group.get_by_id(req.userEmail, id)
@@ -115,7 +123,7 @@ router.put("/:id",
 );
 
 router.delete("/:id",
-  // Body validation
+  // Param validation
   param("id").isInt(),
 
   passport.authorize,
@@ -131,7 +139,74 @@ router.delete("/:id",
 
       group.remove(req.userEmail, id)
         .then((group) => {
-          return res.status(200).json({ name: group.name}).end();
+          return res.status(200).json({ name: group.name }).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
+
+router.get("/:id/user",
+  // Param validation
+  param("id").isInt(),
+
+  passport.authorize,
+
+  (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { id } = req.params;
+
+      group.get_users(req.userEmail, id)
+        .then((users) => {
+          return res.status(200).json(users).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
+
+router.post("/:id/user",
+  // Param and body validation
+  param("id").isInt(),
+  body("email").isEmail().normalizeEmail(),
+
+  passport.authorize,
+
+  (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { id } = req.params;
+
+      group.add_user(req.userEmail, id, req.body.email)
+        .then((user) => {
+          return res.status(200).json({ email: user.email }).end();
         })
         .catch((err) => {
           return res.status(400).json({
