@@ -42,7 +42,8 @@ passport.use(new JWTStrategy({ jwtFromRequest: ExtractJWT.fromExtractors([cookie
     }
   })
     .then((user) => {
-      return callback(null, user, { message: 'Authentication successful' });
+      if (user) return callback(null, user, { message: 'Authentication successful' });
+      return callback(null, false, { message: 'Invalid authentication token' });
     })
     .catch((err) => {
       return callback(err, false, { message: 'Invalid authentication token' });

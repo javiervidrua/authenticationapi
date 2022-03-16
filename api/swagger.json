@@ -859,12 +859,12 @@
     "GroupData": {
       "properties": {
         "id": {
-          "type": "number"
+          "type": "string"
         },
         "name": {
           "type": "string"
         },
-        "isAdmin": {
+        "is_admin": {
           "type": "boolean"
         }
       }
@@ -880,7 +880,7 @@
         "email": {
           "type": "string"
         },
-        "isAdmin": {
+        "is_admin": {
           "type": "boolean"
         }
       }
