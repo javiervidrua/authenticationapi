@@ -3,7 +3,7 @@ const sequelize = require('../libraries/sequelize');
 const models = require('../models/init-models')(sequelize);
 const express = require("express");
 const router = express.Router();
-const { body, query, validationResult } = require('express-validator');
+const { body, param, validationResult } = require('express-validator');
 const passport = require('../libraries/passport');
 
 router.get("/",
@@ -55,79 +55,96 @@ router.post("/",
   }
 );
 
-// router.put("/",
-  // // Body validation
-  // body("full_name").isLength({ min: 5, max: 50 }),
-  // body("address").isLength({ min: 5, max: 100 }),
-  // body("city").isLength({ min: 1, max: 50 }),
-  // body("postal").isLength({ min: 5, max: 7 }),
-  // body("phone").isMobilePhone(),
+router.get("/:id",
+  passport.authorize,
 
-//   passport.authorize,
+  (req, res) => {
+    try {
+      const { id } = req.params;
 
-//   (req, res) => {
-//     try {
-//       const errors = validationResult(req);
-//       if (!errors.isEmpty()) {
-//         return res.status(400).json({ errors: errors.array() });
-//       }
+      group.get_by_id(req.userEmail, id)
+        .then((group) => {
+          return res.status(200).json(group).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
 
-//       // Sanitize the user input
-//       let userData = {};
-//       if (req.body.full_name) userData.full_name = req.body.full_name;
-//       if (req.body.address) userData.address = req.body.address;
-//       if (req.body.city) userData.city = req.body.city;
-//       if (req.body.postal) userData.postal = req.body.postal;
-//       if (req.body.phone) userData.phone = req.body.phone;
+router.put("/:id",
+  // Param and body validation
+  param("id").isInt(),
+  body("name").isLength({ min: 5, max: 50 }),
 
-//       user.update(req.userEmail, userData)
-//         .then((user) => {
-//           return res.status(200).json(user).end();
-//         })
-//         .catch((err) => {
-//           return res.status(400).json({
-//             errors: [err]
-//           }).end();
-//         });
-//     }
-//     catch (error) {
-//       return res.status(500).json({
-//         errors: [error]
-//       })
-//     }
-//   }
-// );
+  passport.authorize,
 
-// router.delete("/",
-//   // Body validation
-//   body("password").isStrongPassword(),
+  (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-//   passport.authorize,
+      const { id } = req.params;
 
-//   (req, res) => {
-//     try {
-//       const errors = validationResult(req);
-//       if (!errors.isEmpty()) {
-//         return res.status(400).json({ errors: errors.array() });
-//       }
+      group.update(req.userEmail, id, req.body.name)
+        .then((group) => {
+          return res.status(200).json({ name: group.name }).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
 
-//       user.remove(req.userEmail, req.body.password)
-//         .then((user) => {
-//           res.clearCookie('jwt');
-//           return res.status(200).json(user).end();
-//         })
-//         .catch((err) => {
-//           return res.status(400).json({
-//             errors: [err]
-//           }).end();
-//         });
-//     }
-//     catch (error) {
-//       return res.status(500).json({
-//         errors: [error]
-//       })
-//     }
-//   }
-// );
+router.delete("/:id",
+  // Body validation
+  param("id").isInt(),
+
+  passport.authorize,
+
+  (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { id } = req.params;
+
+      group.remove(req.userEmail, id)
+        .then((group) => {
+          return res.status(200).json({ name: group.name}).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
 
 module.exports = router;
