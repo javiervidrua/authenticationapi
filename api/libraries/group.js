@@ -251,6 +251,59 @@ function remove(userEmail, id) {
 }
 module.exports.remove = remove;
 
+function remove_user(userEmail, id, email) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      const user = await models.users.findOne({
+        where: {
+          email: userEmail
+        }
+      });
+
+      const groups = await models.users_groups.findAll({
+        where: {
+          user_id: user.id,
+          group_id: id
+        }
+      });
+
+      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+
+      const newUser = await models.users.findOne({
+        where: {
+          email: email
+        }
+      });
+
+      const users_groups = await models.users_groups.findOne({
+        where: {
+          user_id: newUser.id,
+          group_id: id
+        }
+      });
+
+      if (! users_groups) reject({ value: -1, msg: `User with email: ${email} does not belong to the group with id: ${id}` });
+
+      await models.users_groups.destroy({
+        where: {
+          user_id: newUser.id,
+          group_id: id,
+        }
+      });
+      
+      resolve(newUser);
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: `Could not find an user with email: ${email}` });
+    }
+  })
+}
+module.exports.remove_user = remove_user;
+
 function update(userEmail, id, name) {
   return new Promise(async (resolve, reject) => {
     await sequelize.sync();
@@ -288,3 +341,47 @@ function update(userEmail, id, name) {
   })
 }
 module.exports.update = update;
+
+function update_user(userEmail, id, email, is_admin) {
+  return new Promise(async (resolve, reject) => {
+    await sequelize.sync();
+
+    try {
+      const user = await models.users.findOne({
+        where: {
+          email: userEmail
+        }
+      });
+
+      const groups = await models.users_groups.findAll({
+        where: {
+          user_id: user.id,
+          group_id: id
+        }
+      });
+
+      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+
+      const newUser = await models.users.findOne({
+        where: {
+          email: email
+        }
+      });
+
+      const users_groups = await models.users_groups.update({ is_admin: is_admin },{
+        where: {
+          user_id: newUser.id,
+          group_id: id,
+        }
+      });
+      
+      resolve(newUser);
+    }
+    catch (error) {
+      console.log(error);
+      reject({ value: -1, msg: `User with email: ${email} does not belong to the group with id: ${id}` });
+    }
+  })
+}
+module.exports.update_user = update_user;

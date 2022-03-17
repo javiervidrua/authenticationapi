@@ -294,6 +294,9 @@
               "$ref": "#/definitions/UserData"
             }
           },
+          "400": {
+            "description": "Bad request"
+          },
           "500": {
             "description": "Failed retrieving the user's data"
           }
@@ -329,6 +332,9 @@
             "schema": {
               "$ref": "#/definitions/UserData"
             }
+          },
+          "400": {
+            "description": "Bad request"
           },
           "500": {
             "description": "Failed updating the user's data"
@@ -366,6 +372,9 @@
               "$ref": "#/definitions/UserData"
             }
           },
+          "400": {
+            "description": "Bad request"
+          },
           "500": {
             "description": "Failed deleting the user's data"
           }
@@ -394,6 +403,9 @@
             "schema": {
               "$ref": "#/definitions/UserGroups"
             }
+          },
+          "400": {
+            "description": "Bad request"
           },
           "500": {
             "description": "Failed retrieving the user's groups"
@@ -430,6 +442,9 @@
             "schema": {
               "$ref": "#/definitions/GroupName"
             }
+          },
+          "400": {
+            "description": "Bad request"
           },
           "500": {
             "description": "Failed creating the group"
@@ -468,6 +483,9 @@
             "schema": {
               "$ref": "#/definitions/GroupData"
             }
+          },
+          "400": {
+            "description": "Bad request"
           },
           "500": {
             "description": "Failed retrieving the group's information"
@@ -513,6 +531,9 @@
               "$ref": "#/definitions/GroupName"
             }
           },
+          "400": {
+            "description": "Bad request"
+          },
           "500": {
             "description": "Failed updating the group"
           }
@@ -548,6 +569,9 @@
             "schema": {
               "$ref": "#/definitions/GroupName"
             }
+          },
+          "400": {
+            "description": "Bad request"
           },
           "500": {
             "description": "Failed removing the group"
@@ -586,6 +610,9 @@
             "schema": {
               "$ref": "#/definitions/GroupUsers"
             }
+          },
+          "400": {
+            "description": "Bad request"
           },
           "500": {
             "description": "Failed retrieving the group's users"
@@ -631,6 +658,9 @@
               "$ref": "#/definitions/UserEmail"
             }
           },
+          "400": {
+            "description": "Bad request"
+          },
           "500": {
             "description": "Failed adding the user to the specified group"
           }
@@ -675,6 +705,9 @@
               "$ref": "#/definitions/UserEmail"
             }
           },
+          "400": {
+            "description": "Bad request"
+          },
           "500": {
             "description": "Failed updating the users privileges"
           }
@@ -718,6 +751,9 @@
             "schema": {
               "$ref": "#/definitions/GroupName"
             }
+          },
+          "400": {
+            "description": "Bad request"
           },
           "500": {
             "description": "Failed removing the group"

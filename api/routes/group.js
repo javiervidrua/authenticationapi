@@ -222,4 +222,73 @@ router.post("/:id/user",
   }
 );
 
+router.put("/:id/user",
+  // Param and body validation
+  param("id").isInt(),
+  body("email").isEmail().normalizeEmail(),
+  body("is_admin").isBoolean({ loose: true }).toBoolean(),
+
+  passport.authorize,
+
+  (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { id } = req.params;
+
+      group.update_user(req.userEmail, id, req.body.email, req.body.is_admin)
+        .then((user) => {
+          return res.status(200).json({ email: user.email }).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
+
+router.delete("/:id/user",
+  // Param and body validation
+  param("id").isInt(),
+  body("email").isEmail().normalizeEmail(),
+
+  passport.authorize,
+
+  (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      const { id } = req.params;
+
+      group.remove_user(req.userEmail, id, req.body.email)
+        .then((user) => {
+          return res.status(200).json({ email: user.email }).end();
+        })
+        .catch((err) => {
+          return res.status(400).json({
+            errors: [err]
+          }).end();
+        });
+    }
+    catch (error) {
+      return res.status(500).json({
+        errors: [error]
+      })
+    }
+  }
+);
+
 module.exports = router;
