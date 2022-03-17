@@ -1,0 +1,665 @@
+---
+swagger: "2.0"
+info:
+  description: "An authentication API implemented in Node.js"
+  version: "1.0.0"
+  title: "Authentication API"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+host: "localhost:3443"
+basePath: "/api/v1"
+schemes:
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /test/db:
+    get:
+      tags:
+      - "Test"
+      summary: "Test that the API can connect to the database"
+      description: "Test that the API can connect to the database"
+      operationId: "testDbGET"
+      produces:
+      - "application/json"
+      parameters: []
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "API can connect to the database"
+          schema:
+            $ref: "#/definitions/Test"
+        "500":
+          description: "API cannot connect to the database"
+      x-swagger-router-controller: "Test"
+  /auth/signup:
+    post:
+      tags:
+      - "Auth"
+      summary: "User sign up"
+      description: "Sign the user up in the system"
+      operationId: "authSignupPOST"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "User data to use to sign up"
+        required: true
+        schema:
+          $ref: "#/definitions/AuthSignup"
+      responses:
+        "200":
+          description: "Sign up succeeded"
+          schema:
+            $ref: "#/definitions/UserEmail"
+        "400":
+          description: "Invalid sign up data"
+        "500":
+          description: "Sign up failed"
+      x-swagger-router-controller: "Auth"
+  /auth/signup/verify:
+    get:
+      tags:
+      - "Auth"
+      summary: "User sign up verification"
+      description: "Verify the sign up of the user in the system"
+      operationId: "authSignupVerifyGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "path"
+        description: "Token to verify the sign up of the user in the system"
+        required: true
+      responses:
+        "200":
+          description: "Sign up verification succeeded"
+          schema:
+            $ref: "#/definitions/UserEmail"
+        "400":
+          description: "Invalid sign up verification token"
+        "500":
+          description: "Sign up verification failed"
+      x-swagger-router-controller: "Auth"
+  /auth/signin:
+    post:
+      tags:
+      - "Auth"
+      summary: "User sign in"
+      description: "Sign the user in to the system"
+      operationId: "authSigninPOST"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "Credentials to use to sign in"
+        required: true
+        schema:
+          $ref: "#/definitions/AuthSignin"
+      responses:
+        "200":
+          description: "Sign in succeeded"
+          schema:
+            $ref: "#/definitions/UserEmail"
+        "400":
+          description: "Invalid credentials"
+        "500":
+          description: "Sign in failed"
+      x-swagger-router-controller: "Auth"
+  /auth/signout:
+    post:
+      tags:
+      - "Auth"
+      summary: "User sign out"
+      description: "Sign the user out of the system"
+      operationId: "authSignoutPOST"
+      produces:
+      - "application/json"
+      parameters: []
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "Sign out succeeded"
+          schema:
+            $ref: "#/definitions/UserEmail"
+        "400":
+          description: "Invalid credentials"
+        "500":
+          description: "Sign out failed"
+      x-swagger-router-controller: "Auth"
+  /auth/recoverpassword:
+    post:
+      tags:
+      - "Auth"
+      summary: "User password recovery"
+      description: "Let the user start the password recovery process"
+      operationId: "authRecoverpasswordPOST"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "email"
+        description: "User email to send the verification link to"
+        required: true
+        schema:
+          $ref: "#/definitions/UserEmail"
+      responses:
+        "200":
+          description: "Password recovery email sent to the user with the email provided\
+            \ in case it exists"
+          schema:
+            $ref: "#/definitions/UserEmail"
+        "500":
+          description: "Password recovery process failed"
+      x-swagger-router-controller: "Auth"
+  /auth/setpassword:
+    post:
+      tags:
+      - "Auth"
+      summary: "User password set"
+      description: "Let the user set the password"
+      operationId: "authSetpasswordPOST"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "token"
+        in: "path"
+        description: "Token to verify the password set of the user"
+        required: true
+      - in: "body"
+        name: "password"
+        description: "New user password"
+        required: true
+        schema:
+          $ref: "#/definitions/UserPassword"
+      responses:
+        "200":
+          description: "New password set"
+          schema:
+            $ref: "#/definitions/UserEmail"
+        "500":
+          description: "Password set process failed"
+      x-swagger-router-controller: "Auth"
+  /user:
+    get:
+      tags:
+      - "User"
+      summary: "Retrieve the user's data"
+      description: "Let the user retrieve his data"
+      operationId: "userGET"
+      produces:
+      - "application/json"
+      parameters: []
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "User's data"
+          schema:
+            $ref: "#/definitions/UserData"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed retrieving the user's data"
+      x-swagger-router-controller: "User"
+    put:
+      tags:
+      - "User"
+      summary: "Update the user's data"
+      description: "Let the user update his data"
+      operationId: "userPUT"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "User's new data"
+        required: true
+        schema:
+          $ref: "#/definitions/UserPut"
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "User's data"
+          schema:
+            $ref: "#/definitions/UserData"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed updating the user's data"
+      x-swagger-router-controller: "User"
+    delete:
+      tags:
+      - "User"
+      summary: "Delete the user's data"
+      description: "Let the user delete his data"
+      operationId: "userDELETE"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "password"
+        description: "User's password"
+        required: true
+        schema:
+          $ref: "#/definitions/UserPassword"
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "User's data"
+          schema:
+            $ref: "#/definitions/UserData"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed deleting the user's data"
+      x-swagger-router-controller: "User"
+  /group:
+    get:
+      tags:
+      - "Group"
+      summary: "Retrieve the user's groups"
+      description: "Let the user retrieve a list of the groups that he belongs to"
+      operationId: "groupGET"
+      produces:
+      - "application/json"
+      parameters: []
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "User's groups"
+          schema:
+            $ref: "#/definitions/UserGroups"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed retrieving the user's groups"
+      x-swagger-router-controller: "Group"
+    post:
+      tags:
+      - "Group"
+      summary: "Create a group"
+      description: "Let the user create a new group"
+      operationId: "groupPOST"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "group"
+        description: "Group"
+        required: true
+        schema:
+          $ref: "#/definitions/GroupName"
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "Group created"
+          schema:
+            $ref: "#/definitions/GroupName"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed creating the group"
+      x-swagger-router-controller: "Group"
+  /group/:id:
+    get:
+      tags:
+      - "Group"
+      summary: "Retrieve the information of the specified group"
+      description: "Let the user retrieve the information of the specified group"
+      operationId: "groupidGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id of the group to retrieve the details of"
+        required: true
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "Group's data"
+          schema:
+            $ref: "#/definitions/GroupData"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed retrieving the group's information"
+      x-swagger-router-controller: "Group"
+    put:
+      tags:
+      - "Group"
+      summary: "Modify the specified group"
+      description: "Let the user modify the details of the specified group"
+      operationId: "groupidPUT"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id of the group to modify"
+        required: true
+      - in: "body"
+        name: "group"
+        description: "Group"
+        required: true
+        schema:
+          $ref: "#/definitions/GroupName"
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "Group updated"
+          schema:
+            $ref: "#/definitions/GroupName"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed updating the group"
+      x-swagger-router-controller: "Group"
+    delete:
+      tags:
+      - "Group"
+      summary: "Remove the specified group"
+      description: "Let the user remove the specified group"
+      operationId: "groupidDELETE"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id of the group to remove"
+        required: true
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "Group's name"
+          schema:
+            $ref: "#/definitions/GroupName"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed removing the group"
+      x-swagger-router-controller: "Group"
+  /group/:id/user:
+    get:
+      tags:
+      - "Group"
+      summary: "Retrieve the users of the specified group"
+      description: "Let the user retrieve a list of the users of the specified group"
+      operationId: "groupidUserGET"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id of the target group"
+        required: true
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "Group's members"
+          schema:
+            $ref: "#/definitions/GroupUsers"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed retrieving the group's users"
+      x-swagger-router-controller: "Group"
+    post:
+      tags:
+      - "Group"
+      summary: "Add an user to the specified group"
+      description: "Let the user add another user to the specified group"
+      operationId: "groupidUserPOST"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id of the target group"
+        required: true
+      - in: "body"
+        name: "user"
+        description: "User"
+        required: true
+        schema:
+          $ref: "#/definitions/UserEmail"
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "User added to the group"
+          schema:
+            $ref: "#/definitions/UserEmail"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed adding the user to the specified group"
+      x-swagger-router-controller: "Group"
+    put:
+      tags:
+      - "Group"
+      summary: "Modify the privileges of the specified user in the specified group"
+      description: "Let the user modify the privileges of the specified user in the\
+        \ specified group"
+      operationId: "groupidUserPUT"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id of the target group"
+        required: true
+      - in: "body"
+        name: "user"
+        description: "User"
+        required: true
+        schema:
+          $ref: "#/definitions/UserPrivileges"
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "User's privileges updated"
+          schema:
+            $ref: "#/definitions/UserEmail"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed updating the users privileges"
+      x-swagger-router-controller: "Group"
+    delete:
+      tags:
+      - "Group"
+      summary: "Remove the specified user from the specified group"
+      description: "Let the user remove an user from the specified group (The user\
+        \ cannot remove itself if he's the only administrator of said group)"
+      operationId: "groupidUserDELETE"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id of the target group"
+        required: true
+      - in: "body"
+        name: "user"
+        description: "User to remove from the specified group"
+        required: true
+        schema:
+          $ref: "#/definitions/UserEmail"
+      security:
+      - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "Group's name"
+          schema:
+            $ref: "#/definitions/GroupName"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Failed removing the group"
+      x-swagger-router-controller: "Group"
+securityDefinitions:
+  ApiKeyAuth:
+    type: "apiKey"
+    name: "jwt"
+definitions:
+  Test:
+    properties:
+      status:
+        type: "number"
+    example:
+      status: 0.80082819046101150206595775671303272247314453125
+  AuthSignup:
+    required:
+    - "email"
+    - "full_name"
+    - "password"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+      full_name:
+        type: "string"
+      address:
+        type: "string"
+      city:
+        type: "string"
+      postal:
+        type: "string"
+      phone:
+        type: "string"
+    example:
+      password: "password"
+      full_name: "full_name"
+      address: "address"
+      city: "city"
+      phone: "phone"
+      postal: "postal"
+      email: "email"
+  AuthSignin:
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+    example:
+      password: "password"
+      email: "email"
+  UserEmail:
+    properties:
+      email:
+        type: "string"
+    example:
+      email: "email"
+  UserPassword:
+    properties:
+      password:
+        type: "string"
+    example:
+      password: "password"
+  UserData:
+    properties:
+      email:
+        type: "string"
+      role:
+        type: "string"
+      verified:
+        type: "boolean"
+      created:
+        type: "string"
+        format: "date-time"
+      last:
+        type: "string"
+        format: "date-time"
+      full_name:
+        type: "string"
+      address:
+        type: "string"
+      city:
+        type: "string"
+      postal:
+        type: "string"
+      phone:
+        type: "string"
+    example:
+      role: "role"
+      full_name: "full_name"
+      address: "address"
+      last: "2000-01-23T04:56:07.000+00:00"
+      city: "city"
+      phone: "phone"
+      created: "2000-01-23T04:56:07.000+00:00"
+      verified: true
+      postal: "postal"
+      email: "email"
+  UserPut:
+    properties:
+      full_name:
+        type: "string"
+      address:
+        type: "string"
+      city:
+        type: "string"
+      postal:
+        type: "string"
+      phone:
+        type: "string"
+    example:
+      full_name: "full_name"
+      address: "address"
+      city: "city"
+      phone: "phone"
+      postal: "postal"
+  UserGroups:
+    type: "array"
+    items:
+      $ref: "#/definitions/GroupData"
+  GroupName:
+    properties:
+      name:
+        type: "string"
+    example:
+      name: "name"
+  GroupData:
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      is_admin:
+        type: "boolean"
+    example:
+      is_admin: true
+      name: "name"
+      id: "id"
+  GroupUsers:
+    type: "array"
+    items:
+      $ref: "#/definitions/UserEmail"
+  UserPrivileges:
+    properties:
+      email:
+        type: "string"
+      is_admin:
+        type: "boolean"
+    example:
+      is_admin: true
+      email: "email"

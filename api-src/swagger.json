@@ -11,10 +11,7 @@
   },
   "host": "localhost:3443",
   "basePath": "/api/v1",
-  "schemes": [
-    "http",
-    "https"
-  ],
+  "schemes": [ "https" ],
   "consumes": [
     "application/json"
   ],
@@ -67,6 +64,7 @@
         "parameters": [
           {
             "name": "user",
+            "required": true,
             "in": "body",
             "description": "User data to use to sign up",
             "schema": {
@@ -103,6 +101,7 @@
         "parameters": [
           {
             "name": "token",
+            "required": true,
             "in": "path",
             "description": "Token to verify the sign up of the user in the system",
             "schema": {
@@ -139,6 +138,7 @@
         "parameters": [
           {
             "name": "user",
+            "required": true,
             "in": "body",
             "description": "Credentials to use to sign in",
             "schema": {
@@ -207,6 +207,7 @@
         "parameters": [
           {
             "name": "email",
+            "required": true,
             "in": "body",
             "description": "User email to send the verification link to",
             "schema": {
@@ -240,6 +241,7 @@
         "parameters": [
           {
             "name": "token",
+            "required": true,
             "in": "path",
             "description": "Token to verify the password set of the user",
             "schema": {
@@ -248,6 +250,7 @@
           },
           {
             "name": "password",
+            "required": true,
             "in": "body",
             "description": "New user password",
             "schema": {
@@ -316,6 +319,7 @@
         "parameters": [
           {
             "name": "user",
+            "required": true,
             "in": "body",
             "description": "User's new data",
             "schema": {
@@ -355,6 +359,7 @@
         "parameters": [
           {
             "name": "password",
+            "required": true,
             "in": "body",
             "description": "User's password",
             "schema": {
@@ -426,6 +431,7 @@
         "parameters": [
           {
             "name": "group",
+            "required": true,
             "in": "body",
             "description": "Group",
             "schema": {
@@ -467,6 +473,7 @@
         "parameters": [
           {
             "name": "id",
+            "required": true,
             "in": "path",
             "description": "Id of the group to retrieve the details of",
             "schema": {
@@ -506,6 +513,7 @@
         "parameters": [
           {
             "name": "id",
+            "required": true,
             "in": "path",
             "description": "Id of the group to modify",
             "schema": {
@@ -514,6 +522,7 @@
           },
           {
             "name": "group",
+            "required": true,
             "in": "body",
             "description": "Group",
             "schema": {
@@ -553,6 +562,7 @@
         "parameters": [
           {
             "name": "id",
+            "required": true,
             "in": "path",
             "description": "Id of the group to remove",
             "schema": {
@@ -594,6 +604,7 @@
         "parameters": [
           {
             "name": "id",
+            "required": true,
             "in": "path",
             "description": "Id of the target group",
             "schema": {
@@ -633,6 +644,7 @@
         "parameters": [
           {
             "name": "id",
+            "required": true,
             "in": "path",
             "description": "Id of the target group",
             "schema": {
@@ -641,6 +653,7 @@
           },
           {
             "name": "user",
+            "required": true,
             "in": "body",
             "description": "User",
             "schema": {
@@ -680,6 +693,7 @@
         "parameters": [
           {
             "name": "id",
+            "required": true,
             "in": "path",
             "description": "Id of the target group",
             "schema": {
@@ -688,6 +702,7 @@
           },
           {
             "name": "user",
+            "required": true,
             "in": "body",
             "description": "User",
             "schema": {
@@ -727,6 +742,7 @@
         "parameters": [
           {
             "name": "id",
+            "required": true,
             "in": "path",
             "description": "Id of the target group",
             "schema": {
@@ -735,6 +751,7 @@
           },
           {
             "name": "user",
+            "required": true,
             "in": "body",
             "description": "User to remove from the specified group",
             "schema": {
