@@ -22,11 +22,11 @@ function add(userEmail, groupName) {
         is_admin: true
       });
 
-      resolve(group);
+      return resolve(group);
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Error creating the group" });
+      return reject({ value: -1, msg: "Error creating the group" });
     }
   })
 }
@@ -50,8 +50,8 @@ function add_user(userEmail, id, email) {
         }
       });
 
-      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
-      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+      if (!groups.length) return reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (!groups[0].dataValues.is_admin) return reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
 
       const newUser = await models.users.findOne({
         where: {
@@ -59,17 +59,17 @@ function add_user(userEmail, id, email) {
         }
       });
 
-      const users_groups = await models.users_groups.create({
+      await models.users_groups.create({
         user_id: newUser.id,
         group_id: id,
         is_admin: false
       });
-      
-      resolve(newUser);
+
+      return resolve(newUser);
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: `User with email: ${email} already belongs to the group with id: ${id}` });
+      return reject({ value: -1, msg: `User with email: ${email} already belongs to the group with id: ${id}` });
     }
   })
 }
@@ -90,7 +90,7 @@ function get(userEmail) {
         include: [{
           model: models.groups,
           as: 'group'
-        },{
+        }, {
           model: models.users,
           as: 'user'
         }],
@@ -113,11 +113,11 @@ function get(userEmail) {
         }
       });*/
 
-      resolve(groups.map( (group) => { return { id: group.group_id, name: group.group.name, is_admin: group.is_admin } }));
+      return resolve(groups.map((group) => { return { id: group.group_id, name: group.group.name, is_admin: group.is_admin } }));
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
+      return reject({ value: -1, msg: "Wrong credentials" });
     }
   })
 }
@@ -138,7 +138,7 @@ function get_by_id(userEmail, id) {
         include: [{
           model: models.groups,
           as: 'group'
-        },{
+        }, {
           model: models.users,
           as: 'user'
         }],
@@ -148,13 +148,13 @@ function get_by_id(userEmail, id) {
         }
       });
 
-      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
-      
-      resolve(groups.map( (group) => { return { id: group.group_id, name: group.group.name, is_admin: group.is_admin } }));
+      if (!groups.length) return reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+
+      return resolve(groups.map((group) => { return { id: group.group_id, name: group.group.name, is_admin: group.is_admin } }));
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
+      return reject({ value: -1, msg: "Wrong credentials" });
     }
   })
 }
@@ -178,10 +178,10 @@ function get_users(userEmail, id) {
         }
       });
 
-      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
-      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+      if (!groups.length) return reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (!groups[0].dataValues.is_admin) return reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
 
-      const users_groups = await models.users_groups.findAll({
+      const usersGroups = await models.users_groups.findAll({
         where: {
           group_id: id
         }
@@ -189,15 +189,15 @@ function get_users(userEmail, id) {
 
       const users = await models.users.findAll({
         where: {
-          id: users_groups.map( (user) => { return user.dataValues.user_id })
+          id: usersGroups.map((user) => { return user.dataValues.user_id })
         }
       });
-      
-      resolve(users.map( (user) => { return { email: user.email } }));
+
+      return resolve(users.map((user) => { return { email: user.email } }));
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
+      return reject({ value: -1, msg: "Wrong credentials" });
     }
   })
 }
@@ -221,8 +221,8 @@ function remove(userEmail, id) {
         }
       });
 
-      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
-      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+      if (!groups.length) return reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (!groups[0].dataValues.is_admin) return reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
 
       await models.users_groups.destroy({
         where: {
@@ -240,12 +240,12 @@ function remove(userEmail, id) {
           id: id
         }
       });
-      
-      resolve(group);
+
+      return resolve(group);
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
+      return reject({ value: -1, msg: "Wrong credentials" });
     }
   })
 }
@@ -269,8 +269,8 @@ function remove_user(userEmail, id, email) {
         }
       });
 
-      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
-      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+      if (!groups.length) return reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (!groups[0].dataValues.is_admin) return reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
 
       const newUser = await models.users.findOne({
         where: {
@@ -278,14 +278,14 @@ function remove_user(userEmail, id, email) {
         }
       });
 
-      const users_groups = await models.users_groups.findOne({
+      const usersGroups = await models.users_groups.findOne({
         where: {
           user_id: newUser.id,
           group_id: id
         }
       });
 
-      if (! users_groups) reject({ value: -1, msg: `User with email: ${email} does not belong to the group with id: ${id}` });
+      if (!usersGroups) reject({ value: -1, msg: `User with email: ${email} does not belong to the group with id: ${id}` });
 
       await models.users_groups.destroy({
         where: {
@@ -293,12 +293,12 @@ function remove_user(userEmail, id, email) {
           group_id: id,
         }
       });
-      
-      resolve(newUser);
+
+      return resolve(newUser);
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: `Could not find an user with email: ${email}` });
+      return reject({ value: -1, msg: `Could not find an user with email: ${email}` });
     }
   })
 }
@@ -322,8 +322,8 @@ function update(userEmail, id, name) {
         }
       });
 
-      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
-      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+      if (!groups.length) return reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (!groups[0].dataValues.is_admin) return reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
 
       const newGroup = await models.groups.update({ name: name }, {
         where: {
@@ -331,12 +331,12 @@ function update(userEmail, id, name) {
         },
         returning: true
       });
-      
-      resolve(newGroup[1][0].dataValues);
+
+      return resolve(newGroup[1][0].dataValues);
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
+      return reject({ value: -1, msg: "Wrong credentials" });
     }
   })
 }
@@ -360,8 +360,19 @@ function update_user(userEmail, id, email, is_admin) {
         }
       });
 
-      if (! groups.length) reject({ value: -1, msg: `Could not find a group with id: ${id}` });
-      if (! groups[0].dataValues.is_admin) reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+      if (!groups.length) return reject({ value: -1, msg: `Could not find a group with id: ${id}` });
+      if (!groups[0].dataValues.is_admin) return reject({ value: -1, msg: `User does not have administrator privileges on the group with id: ${id}` });
+
+      // If the user tries to give up this own admin privileges, only allow to do so if there is at least another admin in the group
+      if (userEmail == email && is_admin == false) {
+        const groupAdmins = models.users_groups.findAll({
+          where: {
+            group_id: id,
+            is_admin: true
+          }
+        });
+        if (groupAdmins.length <= 1) return reject({ value: -1, msg: `Group with id: ${id} must have at least one administrator at all times. Either set another user as admin or delete the group.` });
+      }
 
       const newUser = await models.users.findOne({
         where: {
@@ -369,18 +380,18 @@ function update_user(userEmail, id, email, is_admin) {
         }
       });
 
-      const users_groups = await models.users_groups.update({ is_admin: is_admin },{
+      await models.users_groups.update({ is_admin: is_admin }, {
         where: {
           user_id: newUser.id,
           group_id: id,
         }
       });
-      
-      resolve(newUser);
+
+      return resolve(newUser);
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: `User with email: ${email} does not belong to the group with id: ${id}` });
+      return reject({ value: -1, msg: `User with email: ${email} does not belong to the group with id: ${id}` });
     }
   })
 }

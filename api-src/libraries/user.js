@@ -11,9 +11,6 @@ function remove(userEmail, userPassword) {
     await sequelize.sync();
 
     try {
-      // If the users belongs to a group in which he is the only admin, return error with instructions to either add an admin to the group or to delete it
-
-      // Otherwise, delete the user
       let user = await models.users.findOne({
         where: {
           email: userEmail
@@ -22,7 +19,46 @@ function remove(userEmail, userPassword) {
 
       user = user.dataValues;
 
-      if (! (await bcrypt.compare(userPassword, user.password))) reject({ value: -2, msg: "Wrong credentials" });
+      if (!(await bcrypt.compare(userPassword, user.password))) reject({ value: -2, msg: "Wrong credentials" });
+
+      // Check user's groups before removing the user
+      {
+        let userGroups = await models.users_groups.findAll({
+          where: {
+            user_id: user.id
+          }
+        });
+        userGroups = userGroups.map((userGroup) => { return userGroup.group_id });
+
+        let groupUsers, admins = [], groupsToRemove = [];
+        await Promise.all(userGroups.map(async (groupId) => {
+          groupUsers = await models.users_groups.findAll({
+            where: {
+              group_id: groupId
+            }
+          });
+          groupUsers = groupUsers.map((user) => { return user.dataValues; });
+
+          // If there is more than 1 user in the group and the current user is the only admin, error out
+          if (groupUsers.length > 1 && (groupUsers.filter((user) => { return user.is_admin == true; })).length <= 1) throw (`Remove group with id: ${groupId} or give a member administrator privileges before trying to remove your account`);
+          // If there is only one user (current user), add to a list of groups to delete
+          else groupsToRemove.push(groupId);
+        }));
+
+        // Otherwise, delete the user's groups and the user
+        await Promise.all(groupsToRemove.map(async (groupId) => {
+          await models.users_groups.destroy({
+            where: {
+              group_id: groupId
+            }
+          });
+          await models.groups.destroy({
+            where: {
+              id: groupId
+            }
+          });
+        }));
+      }
 
       await models.users.destroy({
         where: {
@@ -30,16 +66,16 @@ function remove(userEmail, userPassword) {
         }
       });
 
-      // Remove the sensitive data
+      // Remove the sensitive data from the user object
       delete user.id;
       delete user.verification_token;
       delete user.password;
 
-      resolve(user);
+      return resolve(user);
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
+      return reject({ value: -1, msg: error });
     }
   })
 }
@@ -51,18 +87,18 @@ function get(userEmail) {
 
     try {
       const user = await models.users.findOne({
-        attributes: ['email','role','verified','created','last','full_name','address','city','postal','phone']
-      },{
+        attributes: ['email', 'role', 'verified', 'created', 'last', 'full_name', 'address', 'city', 'postal', 'phone']
+      }, {
         where: {
           email: userEmail
         }
       });
 
-      resolve(user);
+      return resolve(user);
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
+      return reject({ value: -1, msg: "Wrong credentials" });
     }
   })
 }
@@ -87,15 +123,15 @@ function recoverpassword(user) {
       updatedUser = updatedUser[1][0].dataValues;
 
       mail.send('Password recovery', user.email, 'Authentication API password recovery', `Make a POST request with a JSON object in the body that uses the following structure:\n{\n\t"password": "yourNewAndSecurePassword"\n}\nto the following URL:\n ${config.host}:${config.port}/api/v1/auth/setpassword?token=${token}`) // https://css-tricks.com/html-forms-in-html-emails/
-        .then((data) => resolve(updatedUser))
+        .then((data) => { return resolve(updatedUser) })
         .catch((err) => {
           console.log(err);
-          reject({ value: -2, msg: "Error sending email with the link to set the new password" });
+          return reject({ value: -2, msg: "Error sending email with the link to set the new password" });
         });
     }
     catch (error) {
       console.log(error)
-      resolve(user);
+      return resolve(user);
     }
   });
 }
@@ -116,11 +152,11 @@ function setpassword(token, password) {
         returning: true
       });
 
-      resolve(updatedUser[1][0].dataValues)
+      return resolve(updatedUser[1][0].dataValues)
     }
     catch (error) {
       console.log(error)
-      reject(user);
+      return reject(user);
     }
   });
 }
@@ -144,15 +180,15 @@ function signup(user) {
       });
 
       mail.send('Account verification', user.email, 'Authentication API sign up', `Click on the following link to verify your account:\n ${config.host}:${config.port}/api/v1/auth/signup/verify?token=${token}`)
-        .then((data) => resolve(newUser))
+        .then((data) => { return resolve(newUser) })
         .catch((err) => {
           console.log(err);
-          reject({ value: -2, msg: "Error sending email with verification token" });
+          return reject({ value: -2, msg: "Error sending email with verification token" });
         });
     }
     catch (error) {
       console.log(error)
-      reject({ value: -1, msg: "Email already in use" });
+      return reject({ value: -1, msg: "Email already in use" });
     }
   });
 }
@@ -176,11 +212,11 @@ function update(userEmail, userData) {
       delete newUser.verification_token;
       delete newUser.password;
 
-      resolve(newUser); // Return the user object. Weird array, something like: [1, [{key: val}]]
+      return resolve(newUser); // Return the user object. Weird array, something like: [1, [{key: val}]]
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong credentials" });
+      return reject({ value: -1, msg: "Wrong credentials" });
     }
   })
 }
@@ -198,11 +234,11 @@ function verify(token) {
         returning: true
       });
 
-      resolve(newUser[1][0]); // Return the user object. Weird array, something like: [1, [{key: val}]]
+      return resolve(newUser[1][0]); // Return the user object. Weird array, something like: [1, [{key: val}]]
     }
     catch (error) {
       console.log(error);
-      reject({ value: -1, msg: "Wrong verification token" });
+      return reject({ value: -1, msg: "Wrong verification token" });
     }
   })
 }
