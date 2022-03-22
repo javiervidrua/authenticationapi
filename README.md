@@ -11,3 +11,5 @@ The original idea was to follow the next steps:
 
 ## Results
 I was able to stick to the plan and the results speak for themselves.
+
+Documentation for the available endpoints is at: https://github.com/javiervidrua/authenticationapi/tree/main/api-client-swagger#documentation-for-api-endpoints
