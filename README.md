@@ -8,3 +8,6 @@ The original idea was to follow the next steps:
 * Implement the API using **[Express.js](https://www.npmjs.com/package/express)**
 * Generate the API docs with **[Swagger](https://www.npmjs.com/package/swagger-ui-express)**
 * Import the API docs in **[Postman](https://www.postman.com/)** and generate a client for the API
+
+## Results
+I was able to stick to the plan and the results speak for themselves.
